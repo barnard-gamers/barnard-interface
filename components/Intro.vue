@@ -14,16 +14,30 @@
         span R
         span D
     .login-button-wrapper
-      a(href="https://discordapp.com/api/oauth2/authorize?client_id=595951033662963735&redirect_uri=https%3A%2F%2Fwhipple-app.herokuapp.com%2Fapi%2Flogin&response_type=code&scope=identify%20email").discord-login
+      a(href="https://discordapp.com/api/oauth2/authorize?client_id=595951033662963735&redirect_uri=https%3A%2F%2Fbarnard-interface.herokuapp.com%2Fapi%2Flogin&response_type=code&scope=identify%20email").discord-login
         .floating-button
           img(src="~/static/discord-logo.svg")
 </template>
 
 <script>
+const Cookie = process.client ? require('js-cookie') : undefined
+
 export default {
   data() {
     return {
 
+    }
+  },
+  methods: {
+    postLogin () {
+      setTimeout(() => { // 非同期リクエストのタイムアウトをシミュレートします
+        const auth = {
+          accessToken: 'someStringGotFromApiServiceWithAjax'
+        }
+        this.$store.commit('setAuth', auth) // クライアントレンダリング用に変更する
+        Cookie.set('auth', auth) // サーバサイドレンダリングのためにクッキーにトークンを保存する
+        this.$router.push('/')
+      }, 1000)
     }
   }
 }
@@ -157,6 +171,7 @@ export default {
         transform: scale(0);
         animation: buttonFadeIn 1s ease forwards;
         animation-delay: 6.5s;
+        cursor: pointer;
 
         .floating-button {
           position: relative;

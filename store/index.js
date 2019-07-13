@@ -1,37 +1,32 @@
-import axios from 'axios'
+import Vuex from 'vuex'
 
-export const state = () => ({
-  authUser: null
-})
+const cookieparser = process.server ? require('cookieparser') : undefined
 
-export const mutations = {
-  SET_USER (state, user) {
-    state.authUser = user
-  }
-}
-
-export const actions = {
-  // nuxtServerInit is called by Nuxt.js before server-rendering every page
-  nuxtServerInit ({ commit }, { req }) {
-    if (req.session && req.session.authUser) {
-      commit('SET_USER', req.session.authUser)
-    }
-  },
-  async login ({ commit }, { username, password }) {
-    try {
-      const { data } = await axios.post('/api/login', { username, password })
-      commit('SET_USER', data)
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        throw new Error('Bad credentials')
+const createStore = () => {
+  return new Vuex.Store({
+    state: () => ({
+      auth: null
+    }),
+    mutations: {
+      setAuth(state, auth) {
+        state.auth = auth
       }
-      throw error
+    },
+    actions: {
+      nuxtServerInit({ commit }, { req }) {
+        let auth = null
+        if (req.headers.cookie) {
+          const parsed = cookieparser.parse(req.headers.cookie)
+          try {
+            auth = JSON.parse(parsed.auth)
+          } catch (err) {
+            // 有効なクッキーが見つからない場合
+          }
+        }
+        commit('setAuth', auth)
+      }
     }
-  },
-
-  async logout ({ commit }) {
-    await axios.post('/api/logout')
-    commit('SET_USER', null)
-  }
-
+  })
 }
+
+export default createStore

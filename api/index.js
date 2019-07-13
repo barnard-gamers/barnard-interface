@@ -1,4 +1,5 @@
 import express from 'express'
+import bodyParser from 'body-parser'
 
 // Create express router
 const router = express.Router()
@@ -13,6 +14,8 @@ router.use((req, res, next) => {
   res.req = req
   next()
 })
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/login", async function(req, res) {
   if (!req.query.code) {
@@ -33,7 +36,7 @@ router.get("/login", async function(req, res) {
       'client_secret': process.env.WHIPPLE_CLIENT_SECRET,
       'grant_type': 'authorization_code',
       'code': req.query.code,
-      'redirect_uri': encodeURIComponent(process.env.REDIRECT_URI),
+      'redirect_uri': process.env.REDIRECT_URI,
       'scope': 'identify email',
     },
     header: {
@@ -45,21 +48,6 @@ router.get("/login", async function(req, res) {
   .then(data => res.send(data))
   .catch(data => res.send(data));
 });
-
-// Add POST - /api/login
-router.post('/login', (req, res) => {
-  if (req.body.username === 'demo' && req.body.password === 'demo') {
-    req.session.authUser = { username: 'demo' }
-    return res.json({ username: 'demo' })
-  }
-  res.status(401).json({ message: 'Bad credentials' })
-})
-
-// Add POST - /api/logout
-router.post('/logout', (req, res) => {
-  delete req.session.authUser
-  res.json({ ok: true })
-})
 
 // Export the server middleware
 export default {

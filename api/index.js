@@ -17,7 +17,7 @@ router.use((req, res, next) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-router.get("/login", async function(req, res) {
+app.get("/login", async function(req, res) {
 
   console.log(req.query);
   res.redirect("/");

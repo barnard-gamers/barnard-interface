@@ -19,7 +19,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/login", async function(req, res) {
 
-  console.log(req);
+  console.log(req.query);
   res.redirect("/");
 
   // if (!req.query.code) {

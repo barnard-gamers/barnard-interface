@@ -32,8 +32,8 @@ router.get("/login", async function(req, res) {
       return response
     },
     body: {
-      'client_id': process.env.WHIPPLE_CLIENT_ID,
-      'client_secret': process.env.WHIPPLE_CLIENT_SECRET,
+      'client_id': process.env.BARNARD_CLIENT_ID,
+      'client_secret': process.env.BARNARD_CLIENT_SECRET,
       'grant_type': 'authorization_code',
       'code': req.query.code,
       'redirect_uri': process.env.REDIRECT_URI,

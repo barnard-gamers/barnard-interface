@@ -18,35 +18,39 @@ router.use((req, res, next) => {
 router.use(bodyParser.urlencoded({ extended: true }));
 
 router.get("/login", async function(req, res) {
-  if (!req.query.code) {
-    res.redirect('/');
-    return
-  };
 
-  console.log(req.query.code);
+  console.log(req);
+  res.redirect("/");
 
-  const discordQuery = {
-    method: 'POST',
-    uri: process.env.API_URI,
-    transform: (body, response, resolveWithFullResponse) => {
-      return response
-    },
-    body: {
-      'client_id': process.env.BARNARD_CLIENT_ID,
-      'client_secret': process.env.BARNARD_CLIENT_SECRET,
-      'grant_type': 'authorization_code',
-      'code': req.query.code,
-      'redirect_uri': process.env.REDIRECT_URI,
-      'scope': 'identify email',
-    },
-    header: {
-    },
-    json: true
-  };
+  // if (!req.query.code) {
+  //   res.redirect('/');
+  //   return
+  // };
 
-  await request(discordQuery)
-  .then(data => res.send(data))
-  .catch(data => res.send(data));
+  // console.log(req.query.code);
+
+  // const discordQuery = {
+  //   method: 'POST',
+  //   uri: process.env.API_URI,
+  //   transform: (body, response, resolveWithFullResponse) => {
+  //     return response
+  //   },
+  //   body: {
+  //     'client_id': process.env.BARNARD_CLIENT_ID,
+  //     'client_secret': process.env.BARNARD_CLIENT_SECRET,
+  //     'grant_type': 'authorization_code',
+  //     'code': req.query.code,
+  //     'redirect_uri': process.env.REDIRECT_URI,
+  //     'scope': 'identify email',
+  //   },
+  //   header: {
+  //   },
+  //   json: true
+  // };
+
+  // await request(discordQuery)
+  // .then(data => res.send(data))
+  // .catch(data => res.send(data));
 });
 
 // Export the server middleware
